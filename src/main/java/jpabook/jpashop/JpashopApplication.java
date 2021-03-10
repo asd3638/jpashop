@@ -5,8 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class JpashopApplication {
-
 	public static void main(String[] args) {
+		Hello hello = new Hello();
+		hello.setData("jihye");
+		System.out.println(hello.getData());
 		SpringApplication.run(JpashopApplication.class, args);
 	}
 
