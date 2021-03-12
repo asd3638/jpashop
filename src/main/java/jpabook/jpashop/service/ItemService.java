@@ -1,5 +1,6 @@
 package jpabook.jpashop.service;
 
+import jpabook.jpashop.domain.item.Book;
 import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,23 @@ public class ItemService {
         itemRepository.save(item);
     }
 
-    public List<Item> findAll() {
+    @Transactional
+    //기본 초기 설정을 readOnly로 해놔서 값을 변경하는 경우가 있는 메소드의 경우 transactional의 옵션을 바꿔줘야함
+    public void updateItem(Long itemId, Book param) {
+        Book findItem = (Book) itemRepository.findOne(itemId);
+
+        findItem.setPrice(param.getPrice());
+        findItem.setName(param.getName());
+        findItem.setStockQuantity(param.getStockQuantity());
+        findItem.setAuthor(param.getAuthor());
+        findItem.setIsbn(param.getIsbn());
+        //이러면 얘는 영속성 계층에서 관리하고 있는 애라
+        //값이 변경되면 db에도 자동으로 관리 된다.
+        //이게 영속성 계층에서의 변경 감지 기능을 사용한 수정 방식이다.
+        //이러면 merge 안써도 된다
+    }
+
+    public List<Item> findItems() {
         return itemRepository.findAll();
     }
 

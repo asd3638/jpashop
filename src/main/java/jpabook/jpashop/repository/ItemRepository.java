@@ -13,12 +13,13 @@ public class ItemRepository {
     private final EntityManager em;
 
     public void save(Item item) {
-        if (item.getId() == null) {
+        /*if (item.getId() == null) {
             em.persist(item);
         } else {
             //만약 값이 있는 것을 또 저장하려고 하면 수정하는 것으로 바꿔야 하는데 merge가 수정 비슷한 거라고 지금은 이해하면 된다.
             em.merge(item);
-        }
+        }*/
+        em.persist(item);
     }
 
     public Item findOne(Long id) {

@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader" />
+    <div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>이름</th>
+                <th>도시</th>
+                <th>주소</th>
+                <th>우편번호</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--
+                내가 members에다가 list담아서 보냈으니까 루프 돌면서 하나씩 보여주면 된다.
+                원래 동적으로 뷰 처리하려면 자바 스크립트 쓰고 그래야 하는데
+                thymeleaf쓰면 html문법 그대로 동적으로 처리할 수 있다는 큰 장점이 있다
+            -->
+            <tr th:each="member : ${members}">
+                <td th:text="${member.id}"></td>
+                <td th:text="${member.name}"></td>
+                <td th:text="${member.address?.city}"></td>
+                <!--
+                    ?는 null이면 그냥 처리 하지 맣라는 뜻이다
+                    변수 중에 null이 들어갈 수도 있는 경우에는 ? 달아줘야 한다.
+                -->
+                <td th:text="${member.address?.street}"></td>
+                <td th:text="${member.address?.zipcode}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:replace="fragments/footer :: footer" />
+</div> <!-- /container -->
+</body>
+</html>
