@@ -17,6 +17,7 @@ public class ItemService {
     private final ItemRepository itemRepository;
 
     @Transactional
+    //기본 초기 설정을 readOnly로 해놔서 값을 변경하는 경우가 있는 메소드의 경우 transactional의 옵션을 바꿔줘야함
     public void saveItem(Item item) {
         itemRepository.save(item);
     }

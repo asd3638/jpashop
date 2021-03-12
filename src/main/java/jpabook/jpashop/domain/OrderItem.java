@@ -1,13 +1,17 @@
 package jpabook.jpashop.domain;
 
 import jpabook.jpashop.domain.item.Item;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+//기본 생성자는 protected로 막을 수 있는 어노테이션
 public class OrderItem {
     @Id
     @GeneratedValue
@@ -32,6 +36,26 @@ public class OrderItem {
 
     private int count;
 
+    //==생성 메서드==//
+    //OrderItem 객체 생성해서 파라미터에 하나씩 값 넣으면 한번에 생성해주는 역할
+    //이것 저것 값 넣을 때마다 찾아다닐 필요가 없다.
+    //orderItem 생성하면서 재고는 줄여야 한다.
+    public static OrderItem createOrderItem(Item item, int orderPrice, int count) {
+        OrderItem orderItem = new OrderItem();
+        orderItem.setItem(item);
+        orderItem.setOrderPrice(orderPrice);
+        orderItem.setCount(count);
 
+        item.removeStock(count);
+        return orderItem;
+    }
 
+    //==비즈니스 로직==//
+    public void cancel() {
+        getItem().addStock(count);
+    }
+
+    public int getTotalPrice() {
+        return orderPrice * count;
+    }
 }

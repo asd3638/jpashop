@@ -1,6 +1,8 @@
 package jpabook.jpashop.domain;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -13,6 +15,7 @@ import java.util.List;
 //얘는 테이블 이름 정해준 이유는 관례로 클래스 명인 Order가 테이블 명으로 설정되기 때문
 //sql 구문 중에서 orderby랑 헷갈려서 orders라고 따로 테이블 명을 지정해준다.
 @Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order {
     @Id
     @GeneratedValue
@@ -81,6 +84,59 @@ public class Order {
     public void setDelivery(Delivery delivery) {
         this.delivery = delivery;
         delivery.setOrder(this);
+    }
+    //==생성 메서드==//
+    //Order 객체 생성해서 파라미터에 하나씩 값 넣으면 한번에 생성해주는 역할
+    //이것 저것 값 넣을 때마다 찾아다닐 필요가 없다.
+    public static Order createOrder(Member member, Delivery delivery, OrderItem... orderItems) {
+        Order order = new Order();
+        order.setMember(member);
+        order.setDelivery(delivery);
+        for (OrderItem orderItem : orderItems) {
+           order.addOrderItem(orderItem);
+        }
+        order.setStatus(OrderStatus.ORDER);
+        order.setOrderDate(LocalDateTime.now());
+        return order;
+    }
+
+
+    //==비즈니스로직==//
+    //왜 서비스 계층에 안 넣고 도메인 계증에 넣냐 싶겠지만
+    //도메인 계층에서 선언하고 관리하는 변수들에 접근할 때 여기에 작성한
+    //비즈니스 로직 통해서 관리하는게 응집성이 있음
+
+    /**
+     * 주문 취소
+     */
+    //order라는 객체를 생성함으로 실행할 수 있는 메소드야.
+    //당연히 order 객체 내에 존재하는 변수들에 대한 접근이 가능하다.
+    public void cancel() {
+        if (delivery.getStatus() == DeliveryStatus.COMP) {
+            throw new IllegalStateException("이미 배송 완료 된 상품은 취소가 불가능합니다.");
+        }
+        //일단 배송 상태 먼저 파악하고
+        this.setStatus(OrderStatus.CANCEL);
+        //배송 상태 변경하고
+        //order
+        for (OrderItem orderItem : orderItems) {
+            orderItem.cancel();
+        }
+        //orderitem돌면서 취소 메소드 진행
+        //이건 또 orderItem에서 메소드 새로 생성해서 취소하면 orderItem상태를 어떻게 변화시키고 싶은지 작성
+
+    }
+
+    //==비즈니스로직==//
+    /**
+     * 전체 주문 가격 조회
+     */
+    public int getTotalPrice() {
+        int totalPrice = 0;
+        for(OrderItem orderItem : orderItems) {
+            totalPrice += orderItem.getTotalPrice();
+        }
+        return totalPrice;
     }
 
 }
