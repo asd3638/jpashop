@@ -1,8 +1,7 @@
 package jpabook.jpashop.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jpabook.jpashop.domain.Member;
-import jpabook.jpashop.domain.MemberDto;
+import jpabook.jpashop.domain.dto.MemberDto;
 import jpabook.jpashop.repository.MemberRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 

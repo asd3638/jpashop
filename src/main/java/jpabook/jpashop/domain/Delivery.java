@@ -8,19 +8,19 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class Delivery {
+public class Delivery extends BaseEntity {
 
     @Id
     @GeneratedValue
     @Column(name = "delivery_id")
     private Long id;
 
-    @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY)
-    private Order order;
-
-    private DeliveryStatus status;
-
     @Embedded
     private Address address;
 
+    @Enumerated(EnumType.STRING)
+    private DeliveryStatus status;
+
+    @OneToOne(mappedBy = "delivery")
+    private Order order;
 }
