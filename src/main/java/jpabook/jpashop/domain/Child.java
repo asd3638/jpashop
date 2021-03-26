@@ -8,15 +8,16 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class Locker extends BaseEntity{
+public class Child {
 
     @Id
     @GeneratedValue
-    @Column(name = "lock_id")
+    @Column(name = "child_id")
     private Integer id;
 
     private String name;
 
-    @OneToOne(mappedBy = "lock", fetch = FetchType.LAZY)
-    private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Parent parent;
 }

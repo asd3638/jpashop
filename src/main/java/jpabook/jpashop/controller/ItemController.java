@@ -3,8 +3,8 @@ package jpabook.jpashop.controller;
 import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.domain.dto.ItemDto;
 import jpabook.jpashop.repository.ItemRepository;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,30 +13,44 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(value = "/jpashop/item", produces = MediaTypes.HAL_JSON_VALUE)
-@RequiredArgsConstructor
 public class ItemController {
 
     private final ItemRepository itemRepository;
     private final ModelMapper modelMapper;
 
+    @Autowired
+    public ItemController(ItemRepository itemRepository, ModelMapper modelMapper) {
+        this.itemRepository = itemRepository;
+        this.modelMapper = modelMapper;
+    }
+
     @GetMapping
     public ResponseEntity queryitems() {
         List<Item> items = itemRepository.findAll();
-        return ResponseEntity.ok(items);
+
+        List<ItemDto> itemDtos = items.stream().map(i -> modelMapper.map(i, ItemDto.class)).collect(Collectors.toList());
+
+        return ResponseEntity.ok(itemDtos);
     }
 
     @PostMapping
     public ResponseEntity createItem(@RequestBody @Valid ItemDto itemDto) {
-        return ResponseEntity.ok(itemRepository.save(modelMapper.map(itemDto, Item.class)));
+
+        itemRepository.save(modelMapper.map(itemDto, Item.class));
+
+        return ResponseEntity.ok(itemDto);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity queryItem(@PathVariable Integer id) {
         Item item = itemRepository.findById(id).get();
-        return ResponseEntity.ok(item);
+        ItemDto itemDto = modelMapper.map(item, ItemDto.class);
+
+        return ResponseEntity.ok(itemDto);
     }
 
     @PutMapping("/{id}")
@@ -51,7 +65,9 @@ public class ItemController {
         beforeItem.setStockQuantity(itemDto.getStockQuantity());
         itemRepository.save(beforeItem);
 
-        return ResponseEntity.ok(itemRepository.findAll());
+        ItemDto changedItemDto = modelMapper.map(beforeItem, ItemDto.class);
+
+        return ResponseEntity.ok(changedItemDto);
     }
 
     @DeleteMapping("/{id}")
@@ -62,6 +78,6 @@ public class ItemController {
         }
         itemRepository.deleteById(id);
 
-        return ResponseEntity.ok(itemRepository.findAll());
+        return ResponseEntity.ok().build();
     }
 }

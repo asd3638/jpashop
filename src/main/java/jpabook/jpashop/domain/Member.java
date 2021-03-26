@@ -16,7 +16,7 @@ public class Member extends BaseEntity{
     @Id
     @GeneratedValue
     @Column(name = "member_id")
-    private Long id;
+    private Integer id;
 
     //일단 단방향으로 봐
     /*@OneToMany
@@ -33,7 +33,7 @@ public class Member extends BaseEntity{
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lock_id")
     private Locker lock;
 

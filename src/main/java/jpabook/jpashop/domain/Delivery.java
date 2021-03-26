@@ -13,7 +13,7 @@ public class Delivery extends BaseEntity {
     @Id
     @GeneratedValue
     @Column(name = "delivery_id")
-    private Long id;
+    private Integer id;
 
     @Embedded
     private Address address;

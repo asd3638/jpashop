@@ -1,8 +1,5 @@
 package jpabook.jpashop.domain.item;
 
-import jpabook.jpashop.domain.BaseEntity;
-import jpabook.jpashop.exception.NotEnoughStockException;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,12 +16,12 @@ import javax.persistence.*;
 @Setter
 //item만 단독으로 table에 저장할 일이 있나 없나 판단해야 하는데
 //있으면 그냥 class 로 없으면 abstract 로 선언해주면 된다.
-public abstract class Item extends BaseEntity {
+public class Item {
 
     @Id
     @GeneratedValue
     @Column(name = "item_id")
-    private Long id;
+    private Integer id;
 
     private String name;
 
